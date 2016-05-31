@@ -1,6 +1,6 @@
-=== Multisite Crossposter ===
+=== WPArtisan Multisite Crossposter ===
 Contributors: OzTheGreat
-Donate link: https://ozthegreat.io
+Donate link: https://wpartisan.me
 Tags: wpmu, posts, crossposting, multisite
 Requires at least: 3.0.1
 Tested up to: 4.5.2
@@ -12,7 +12,7 @@ Crosspost posts between blogs in a WordPress Multisite environment
 
 == Description ==
 
-In a multisite environment allows crossposting of a post from any blog to any other blogs.
+In a multisite environment enables crossposting of a post from any blog to any other blogs.
 The crossposted articles have exactly the same properties as the original except for the permalink
 which links back to the original.
 
@@ -22,11 +22,9 @@ in years, it's vastly too complicated, the admin side of things is very clunky a
 some of its methods as a base but has a much more streamlined admin process. We have maintained the same post meta
 field names so this plugin should be 100% backwards compatible.
 
-THIS PLUGIN REQUIRES WORDPRESS MULTISITE AND IS USELESS WITHOUT IT
-
 == Installation ==
 
-1. Upload `multisite-crossposter` to the `/wp-content/plugins/` directory
+1. Upload `wpa-multisite-crossposter` to the `/wp-content/plugins/` directory
 2. Network activate the plugin through the 'Network Plugins' menu in WordPress
 
 == Frequently Asked Questions ==

@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: Multisite Crossposter
+ * Plugin Name: WPArtisan Multisite Crossposter
  * Description: Crosspost posts between blogs in a WordPress Multisite environment
- * Author: TheGreatWPCompany
- * Author URI: https://TheGreatWPCompany.com
+ * Author: OzTheGreat
+ * Author URI: https://wpartisan.me
  * Version: 0.0.1
- * Plugin URI: https://TheGreatWPCompany.com/plugins/multisite-cross-poster
+ * Plugin URI: https://wpartisan.me/plugins/wpa-multisite-crossposter
  *
  */
 
