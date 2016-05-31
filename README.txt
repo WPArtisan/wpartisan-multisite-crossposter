@@ -24,8 +24,9 @@ field names so this plugin should be 100% backwards compatible.
 
 == Installation ==
 
-1. Upload `wpa-multisite-crossposter` to the `/wp-content/plugins/` directory
+1. Upload `wpartisan-multisite-crossposter` to the `/wp-content/plugins/` directory
 2. Network activate the plugin through the 'Network Plugins' menu in WordPress
+3. On the post editor screen there will now be a new metabox where you can select which sites in your network to crosspost that post to
 
 == Frequently Asked Questions ==
 
@@ -44,5 +45,8 @@ functionality won't work if the plugin isn't enabled.
 
 == Changelog ==
 
-= 1.0 =
+= 0.0.2 =
+* Readme updates
+
+= 0.0.1 =
 * Plugin released
