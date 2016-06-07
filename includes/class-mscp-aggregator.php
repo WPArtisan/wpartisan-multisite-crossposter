@@ -40,7 +40,7 @@ class MSCP_Aggregator {
 		add_action( 'mscp_aggregate_post_deletion', array( $this, 'aggregate_post_deletion' ), 10, 3 );
 
 		add_filter( 'post_link', array( $this, 'post_link' ), 10, 2 );
-		add_filter( 'mscp_prepare_post_featured_image', array( $this, 'check_image_exists' ), 10, 1 );
+		// add_filter( 'mscp_prepare_post_featured_image', array( $this, 'check_image_exists' ), 10, 1 );
 		add_filter( 'mscp_schedule_post_aggregation_blogs', array( $this, 'check_user_blogs_permissions' ), 10, 2 );
 	}
 
@@ -243,7 +243,7 @@ class MSCP_Aggregator {
 				if ( $featured_image ) {
 
 					// Add the function above to catch the attachments creation
-					// media_sideload_image jsut returns the image src for some reasons
+					// media_sideload_image just returns the image src for some reasons
 					add_action( 'add_attachment', array( $this, 'process_new_attachment' ) );
 
 					// Add the featured image
@@ -634,7 +634,7 @@ class MSCP_Aggregator {
 	 */
 	public function check_user_blogs_permissions( $blogs, $post ) {
 		foreach ( $blogs as $key => $blog_id ) {
-			if ( ! current_user_can_for_blog( $blog_id, 'edit_post' ) )
+			if ( ! current_user_can_for_blog( $blog_id, 'edit_posts' ) )
 				unset( $blogs[ $key ] );
 		}
 

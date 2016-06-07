@@ -45,6 +45,10 @@ functionality won't work if the plugin isn't enabled.
 
 == Changelog ==
 
+= 0.0.3 =
+* Fix correct permissions name
+* Disable 'check_image_exists' function. Seems flaky.
+
 = 0.0.2 =
 * Readme updates
 
