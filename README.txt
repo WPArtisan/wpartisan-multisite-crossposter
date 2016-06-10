@@ -45,6 +45,9 @@ functionality won't work if the plugin isn't enabled.
 
 == Changelog ==
 
+= 0.0.4 =
+* Change how featured image is handled. Works better with CDN plugins now
+
 = 0.0.3 =
 * Fix correct permissions name
 * Disable 'check_image_exists' function. Seems flaky.

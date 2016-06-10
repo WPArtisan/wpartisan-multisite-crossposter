@@ -40,7 +40,6 @@ class MSCP_Aggregator {
 		add_action( 'mscp_aggregate_post_deletion', array( $this, 'aggregate_post_deletion' ), 10, 3 );
 
 		add_filter( 'post_link', array( $this, 'post_link' ), 10, 2 );
-		// add_filter( 'mscp_prepare_post_featured_image', array( $this, 'check_image_exists' ), 10, 1 );
 		add_filter( 'mscp_schedule_post_aggregation_blogs', array( $this, 'check_user_blogs_permissions' ), 10, 2 );
 	}
 
@@ -242,15 +241,50 @@ class MSCP_Aggregator {
 				// Featured Image //
 				if ( $featured_image ) {
 
-					// Add the function above to catch the attachments creation
-					// media_sideload_image just returns the image src for some reasons
-					add_action( 'add_attachment', array( $this, 'process_new_attachment' ) );
+					// Because of the various CDN plugins around we can't just
+					// use media_handle_upload. We have to actually retrieve the
+					// image then re-upload it.
+					$image = wp_remote_get( $featured_image->url );
 
-					// Add the featured image
-					$images = media_sideload_image( $featured_image, $aggregated_post_id );
+					if ( '200' == wp_remote_retrieve_response_code( $image ) ) {
 
-					// Now the attachment has been added we can deregister this function
-					remove_action( 'add_attachment', array( $this, 'process_new_attachment' ) );
+						// Upload the image to this site's upload dir
+						$attachment = wp_upload_bits( basename( $featured_image->path ), null, $image['body'], date( "Y-m", strtotime( $image['headers']['last-modified'] ) ) );
+
+						if ( empty( $attachment['error'] ) ) {
+
+							// Get the filetype
+							$filetype = wp_check_filetype( basename( $attachment['file'] ), null );
+
+							$filename = $attachment['file'];
+
+							// Setup the attachment data
+							$attachment_data = array(
+								'post_mime_type' => $filetype['type'],
+								'post_title'     => $featured_image->post_title,
+								'post_excerpt'   => $featured_image->post_excerpt,
+								'post_content'   => '',
+								'post_status'    => 'inherit',
+							);
+
+							// Insert the new attachment data with our basic information
+							$attach_id = wp_insert_attachment( $attachment_data, $filename, $aggregated_post_id );
+
+							// Check the wp_generate_attachment_data() function exists
+							if ( ! function_exists( 'wp_generate_attachment_data' ) )
+								require_once ( ABSPATH . 'wp-admin/includes/image.php' );
+
+							// Generate the raw iamge meta data
+							$attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
+
+							// Save the image meta data to the new attachment
+							wp_update_attachment_metadata( $attach_id,  $attach_data );
+
+							// Set as the feature image
+							set_post_thumbnail( $aggregated_post_id, $attach_id );
+						}
+
+					}
 
 				}
 
@@ -565,7 +599,7 @@ class MSCP_Aggregator {
 	 */
 	public function prepare_featured_image( $post ) {
 
-		$thumbnail_url = false;
+		$attachment = false;
 
 		// Check if there's a featured image
 		if ( has_post_thumbnail( $post->ID ) ){
@@ -573,55 +607,24 @@ class MSCP_Aggregator {
 			// Get the ID of the featured image
 			$thumb_id = get_post_thumbnail_id( $post->ID );
 
-			if ( ! empty( $thumb_id ) ) {
+			$attachment = get_post( $thumb_id );
 
-				$thumbnail = wp_get_attachment_image_src( $thumb_id, 'full' );
+			// We need to add some fields before we switch blog
+			// Get the full URl
+			$attachment->url = wp_get_attachment_url( $attachment->ID );
 
-				// Get the raw image URL (the first element of the returned array)
-				$thumbnail_url = array_shift( $thumbnail );
-			}
+			// Get the path
+			$attachment->path = get_attached_file( $attachment->ID );
 		}
 
 		/**
-		 * Filter the terms that are getting crossposted
-		 * @var array  $terms
+		 * Filter the featured image attachment that's getting crossposted
+		 * @var array  $attachment
 		 * @var object $post
 		 */
-		$thumbnail_url = apply_filters( 'mscp_prepare_post_featured_image', $thumbnail_url, $post );
+		$attachment = apply_filters( 'mscp_prepare_post_featured_image', $attachment, $post );
 
-		return $thumbnail_url;
-	}
-
-	/**
-	 * The sideload_media function dies and kills our script if it can't find
-	 * an image. Let's check the image exists before passing to it
-	 *
-	 * @access public
-	 * @param  string $url
-	 * @return string|null
-	 */
-	public function check_image_exists( $url ) {
-		$response = wp_remote_head( $url );
-		return '200' == wp_remote_retrieve_response_code( $response ) ? $url : false ;
-	}
-
-	/**
-	 * When sideloading new media in add this as an action
-	 * and it will generate all the required meta data
-	 *
-	 * @access public
-	 * @param  int $att_id
-	 * @return null
-	 */
-	public function process_new_attachment( $att_id ) {
-		// The post we just added is the attachment's parent
-		$post = get_post( $att_id );
-
-		// Generate thumbnails, because WP usually do this for us
-		$target_thumbnail_data = wp_generate_attachment_metadata( $att_id, get_attached_file( $att_id ) );
-
-		// Add the featured image to the target post
-		update_post_meta( $post->post_parent, '_thumbnail_id', $att_id );
+		return $attachment;
 	}
 
 	/**
@@ -633,9 +636,11 @@ class MSCP_Aggregator {
 	 * @return array
 	 */
 	public function check_user_blogs_permissions( $blogs, $post ) {
+
 		foreach ( $blogs as $key => $blog_id ) {
-			if ( ! current_user_can_for_blog( $blog_id, 'edit_posts' ) )
+			if ( ! current_user_can_for_blog( $blog_id, 'edit_posts' ) ) {
 				unset( $blogs[ $key ] );
+			}
 		}
 
 		return $blogs;
