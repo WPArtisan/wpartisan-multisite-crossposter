@@ -45,6 +45,9 @@ functionality won't work if the plugin isn't enabled.
 
 == Changelog ==
 
+= 0.0.5 =
+* Fix incorrect WEEK_IN_SECONDS constant name
+
 = 0.0.4 =
 * Change how featured image is handled. Works better with CDN plugins now
 

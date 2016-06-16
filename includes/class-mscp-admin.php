@@ -304,7 +304,7 @@ class MSCP_Admin {
 		$user_blogs = apply_filters( 'mscp_user_blogs', $user_blogs, $user_id );
 
 		// Cache the results
-		set_transient( 'mscp_user_blogs_' . $user_id, $user_blogs, WEEK_IN_DAYS );
+		set_transient( 'mscp_user_blogs_' . $user_id, $user_blogs, WEEK_IN_SECONDS );
 
 		return $user_blogs;
 	}
