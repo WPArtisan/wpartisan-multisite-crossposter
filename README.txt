@@ -3,8 +3,8 @@ Contributors: OzTheGreat
 Donate link: https://wpartisan.me
 Tags: wpmu, posts, crossposting, multisite
 Requires at least: 3.0.1
-Tested up to: 4.5.2
-Stable tag: 4.5.2
+Tested up to: 4.5.3
+Stable tag: 4.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,6 +44,9 @@ functionality won't work if the plugin isn't enabled.
 1. The Crossposting box
 
 == Changelog ==
+
+= 0.0.6 =
+* Fix not all sites displaying for super admins
 
 = 0.0.5 =
 * Fix incorrect WEEK_IN_SECONDS constant name

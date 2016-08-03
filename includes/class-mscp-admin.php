@@ -284,17 +284,40 @@ class MSCP_Admin {
 		if ( $user_blogs = get_transient( 'mscp_user_blogs_' . $user_id ) )
 			return $user_blogs;
 
-		$user_blogs = get_blogs_of_user( $user_id );
+		if ( is_super_admin( $user_id ) ) {
 
-		// If not superadmin check permissions
-		if ( ! is_super_admin( $user_id ) ) {
+			// get_blogs_of_user() doesn't work for super admins. Have to construct manually
+			$blogs = wp_get_sites( array( 'spam' => false, 'archived' => false, 'deleted' => false, 'limit' => false ) );
+
+			$user_blogs = array();
+
+			foreach ( $blogs as $blog ) {
+
+				$blog = get_blog_details( $blog['blog_id'] );
+
+				$user_blogs[ $blog->blog_id ] = (object) array(
+					'userblog_id' => $blog->blog_id,
+					'blogname'    => $blog->blogname,
+					'domain'      => $blog->domain,
+					'path'        => $blog->path,
+					'site_id'     => $blog->site_id,
+					'siteurl'     => $blog->siteurl,
+					'archived'    => $blog->archived,
+					'mature'      => $blog->mature,
+					'spam'        => $blog->spam,
+					'deleted'     => $blog->deleted,
+				);
+			}
+
+		} else {
+			// If not superadmin check permissions
+			$user_blogs = get_blogs_of_user( $user_id );
 
 			// Cycle through each blog and add it to the output if the user can post on it
 			foreach ( $user_blogs as $key => $user_blog ) {
-				if ( ! current_user_can_for_blog( $user_blog->userblog_id, 'edit_post' ) )
+				if ( ! current_user_can_for_blog( $user_blog->userblog_id, 'edit_posts' ) )
 					unset( $user_blogs[ $key ] );
 			}
-
 		}
 
 		/**
