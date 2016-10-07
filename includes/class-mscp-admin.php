@@ -281,19 +281,31 @@ class MSCP_Admin {
 		$user_id = get_current_user_id();
 
 		// Check the cache first
-		if ( $user_blogs = get_transient( 'mscp_user_blogs_' . $user_id ) )
+		if ( $user_blogs = get_site_transient( 'mscp_user_blogs_' . $user_id ) )
 			return $user_blogs;
 
+		// get_blogs_of_user() doesn't work for super admins. Have to construct manually.
 		if ( is_super_admin( $user_id ) ) {
 
-			// get_blogs_of_user() doesn't work for super admins. Have to construct manually
-			$blogs = wp_get_sites( array( 'spam' => false, 'archived' => false, 'deleted' => false, 'limit' => false ) );
+			// get_sites() was added in 4.6.
+			if ( function_exists( 'get_sites' ) && class_exists( 'WP_Site_Query' ) ) {
+
+				$blogs = get_sites( array( 'orderby'=> array( 'domain', 'path' ), 'fields' => 'ids', 'spam' => false, 'archived' => false, 'deleted' => false, 'number' => false ) );
+
+			// Pre 4.6 use wp_get_sites()
+			} else {
+
+				$blogs = wp_get_sites( array( 'spam' => false, 'archived' => false, 'deleted' => false, 'number' => false, 'limit' => false ) );
+
+				$blogs = wp_list_pluck( $blogs, 'blog_id' );
+
+			}
 
 			$user_blogs = array();
 
 			foreach ( $blogs as $blog ) {
 
-				$blog = get_blog_details( $blog['blog_id'] );
+				$blog = get_blog_details( $blog );
 
 				$user_blogs[ $blog->blog_id ] = (object) array(
 					'userblog_id' => $blog->blog_id,
@@ -327,7 +339,7 @@ class MSCP_Admin {
 		$user_blogs = apply_filters( 'mscp_user_blogs', $user_blogs, $user_id );
 
 		// Cache the results
-		set_transient( 'mscp_user_blogs_' . $user_id, $user_blogs, WEEK_IN_SECONDS );
+		set_site_transient( 'mscp_user_blogs_' . $user_id, $user_blogs, WEEK_IN_SECONDS );
 
 		return $user_blogs;
 	}
@@ -340,7 +352,7 @@ class MSCP_Admin {
 	 * @return null
 	 */
 	public function clear_user_blog_cache( $user_id ) {
-		delete_transient( 'mscp_user_blogs_' . $user_id );
+		delete_site_transient( 'mscp_user_blogs_' . $user_id );
 	}
 
 }
