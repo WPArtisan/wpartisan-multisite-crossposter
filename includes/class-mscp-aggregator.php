@@ -100,14 +100,14 @@ class MSCP_Aggregator {
 	 * @param  boolean $update
 	 * @return null
 	 */
-	public function schedule_post_aggregation( $post_id, $post, $update ) {
+	public function schedule_post_aggregation( $post_id, $post, $update = false ) {
 
 		// If this is just a revision, don't do anything
 		if ( 'publish' != $post->post_status )
 			return;
 
 		// Unhook this function so it doesn't loop infinitely
-		remove_action( 'save_post', array( $this, __FUNCTION__ ) );
+		remove_action( 'save_post', array( $this, __FUNCTION__ ), 10, 3 );
 
 		if ( $blogs = get_post_meta( $post_id, '_mscp_blogs', true ) ) {
 
@@ -135,7 +135,7 @@ class MSCP_Aggregator {
 		}
 
 		// Re-hook this function
-		add_action( 'save_post', array( $this, __FUNCTION__ ) );
+		add_action( 'save_post', array( $this, __FUNCTION__ ), 10, 3 );
 	}
 
 	/**

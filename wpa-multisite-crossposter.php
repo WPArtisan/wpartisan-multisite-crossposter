@@ -4,7 +4,7 @@
  * Description: Crosspost posts between blogs in a WordPress Multisite environment
  * Author: OzTheGreat (WPArtisan)
  * Author URI: https://wpartisan.me
- * Version: 0.0.8
+ * Version: 0.0.9
  * Plugin URI: https://wpartisan.me/plugins/wpa-multisite-crossposter
  *
  */
@@ -13,7 +13,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Define the current version
-define( 'MSCP_VERSION', '0.0.8' );
+define( 'MSCP_VERSION', '0.0.9' );
 
 // Define the plugin base path
 define( 'MSCP_BASE_PATH', dirname( __FILE__ ) );
