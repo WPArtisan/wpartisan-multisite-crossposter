@@ -2,17 +2,17 @@
 Contributors: ozthegreat
 Donate link: https://wpartisan.me
 Tags: wpmu, posts, crossposting, multisite
-Requires at least: 4.0
-Tested up to: 4.7.1
-Stable tag: 0.0.10
+Requires at least: 4.4
+Tested up to: 4.7.3
+Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Crosspost posts between blogs in a WordPress Multisite environment
+Sync or crosspost posts, pages or custom post types between blogs or sites in a WordPress Multisite environment
 
 == Description ==
 
-In a multisite environment enables crossposting of a post from any blog to any other blogs.
+In a multisite environment enables syncing or crossposting of posts, pages, or custom post types from any blog to any other blogs.
 The crossposted articles have exactly the same properties as the original except for the permalink
 which links back to the original.
 
@@ -30,6 +30,10 @@ field names so this plugin should be 100% backwards compatible.
 
 == Frequently Asked Questions ==
 
+= Does it support custom post types? =
+
+Yes, as of version 0.1.0.
+
 = Are there any options? =
 
 Nope, not at the moment
@@ -45,8 +49,11 @@ functionality won't work if the plugin isn't enabled.
 
 == Changelog ==
 
-= 0.0.10 =
-* WordPress 4.7.1 compatibility check
+= 0.1.0 =
+* Support for Pages and Custom Post Types.
+* Re write how posts + meta are saved. Better consistency when using hooks.
+* Bug fixes + small speed improvements.
+* Move towards WordPress coding standards.
 
 = 0.0.9 =
 * Fix missing parameter error
