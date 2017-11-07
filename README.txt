@@ -3,8 +3,8 @@ Contributors: ozthegreat
 Donate link: https://wpartisan.me
 Tags: wpmu, posts, crossposting, multisite
 Requires at least: 4.4
-Tested up to: 4.7.3
-Stable tag: 0.1.0
+Tested up to: 4.8.3
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,9 @@ functionality won't work if the plugin isn't enabled.
 1. The Crossposting box
 
 == Changelog ==
+
+= 0.1.1 =
+* WordPress 4.8.3 compatibility
 
 = 0.1.0 =
 * Support for Pages and Custom Post Types.

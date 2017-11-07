@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define the current version.
-define( 'MSCP_VERSION', '0.1.0' );
+define( 'MSCP_VERSION', '0.1.1' );
 
 // Define the plugin base path.
 define( 'MSCP_BASE_PATH', dirname( __FILE__ ) );
